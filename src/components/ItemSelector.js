@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import BudgetInput from "./BudgetInput";
+import _ from "lodash";
 
 import db from "../firebase";
 import { onSnapshot, collection } from "firebase/firestore";
@@ -16,6 +17,18 @@ const ItemSelector = () => {
   };
 
   console.log(items);
+  const grouped = _.groupBy(items, (item) => item.type);
+  console.log(grouped, "grouped items object");
+
+  for (const [key, value] of Object.entries(grouped)) {
+    console.log(
+      key,
+      "object keys",
+      value.map((item) => item),
+      "object values with type"
+    );
+  }
+
   useEffect(
     () =>
       // on snapshot updates itself everytime it detects a change in the database
@@ -41,8 +54,20 @@ const ItemSelector = () => {
       <div>
         Current Budget: {budget}
         <div>
-          {items.map((item) => (
+          {/* {items.map((item) => (
             <p key={item.id}>{item.name}</p>
+          ))} */}
+
+          {Object.entries(grouped).map(([key, value]) => (
+            <React.Fragment>
+              <p>Type: {key}</p>
+              {value.map((item) => (
+                <p key={item.id} className="tempBorder">
+                  Name: {item.name} LowPrice: {item.lowPrice} : HighPrice:{" "}
+                  {item.highPrice}
+                </p>
+              ))}
+            </React.Fragment>
           ))}
         </div>
       </div>

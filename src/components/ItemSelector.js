@@ -1,39 +1,39 @@
 import React, { useState, useEffect } from "react";
-import BudgetInput from "./BudgetInput";
+import { onSnapshot, collection, setDoc, doc } from "firebase/firestore";
 import _ from "lodash";
 
+import BudgetInput from "./BudgetInput";
+import Item from "./Item";
 import db from "../firebase";
-import { onSnapshot, collection, setDoc, doc } from "firebase/firestore";
 
 const ItemSelector = () => {
   const [budget, setBudget] = useState(0);
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [totalLow, setTotalLow] = useState(0);
-  const [totalHigh, setTotalHigh] = useState(0);
+  const [totalLowPrice, setTotalLowPrice] = useState(0);
+  const [totalHighPrice, setTotalHighPrice] = useState(0);
 
   const handleBudgetSubmission = (finalBudget) => {
-    console.log(finalBudget);
     setBudget(finalBudget);
   };
-
-  const grouped = _.groupBy(items, (item) => item.type);
 
   const handleSelectedItems = (item) => {
     let isInArr = false;
     let selectedIndex;
-    setTotalLow(0);
-    // if same type is in selected items, replace that item
+    setTotalLowPrice(0);
+    // if the selected item type can be found in selectedItems arr, replace the old item with the newly selected item
     selectedItems?.map((selected, idx) => {
       if (selected.type && selected.type === item.type) {
         isInArr = true;
         selectedIndex = idx;
-        setTotalLow((totalLow) => (totalLow += selected.lowPrice));
+        setTotalLowPrice(
+          (totalLowPrice) => (totalLowPrice += selected.lowPrice)
+        );
       }
     });
 
     if (isInArr) {
-      // delete if found
+      // delete duplicate item type from its current index
       selectedItems.splice(selectedIndex, 1);
       setSelectedItems([...selectedItems, item]);
     } else {
@@ -46,7 +46,7 @@ const ItemSelector = () => {
     selectedItems.forEach((item) => {
       return (lowPrice += item.lowPrice);
     });
-    setTotalLow(lowPrice / 100);
+    setTotalLowPrice(lowPrice / 100);
   };
 
   const aggregateHighPrice = () => {
@@ -54,13 +54,13 @@ const ItemSelector = () => {
     selectedItems.forEach((item) => {
       return (highPrice += item.highPrice);
     });
-    setTotalHigh(highPrice / 100);
+    setTotalHighPrice(highPrice / 100);
   };
 
   const displayBudgetMessage = () => {
-    if (totalLow > budget || totalHigh > budget) {
+    if (totalLowPrice > budget || totalHighPrice > budget) {
       return <p>You are over budget</p>;
-    } else if (totalHigh <= budget) {
+    } else if (totalHighPrice <= budget) {
       return <p>You are on budget</p>;
     }
     return <p>You are under budget</p>;
@@ -81,10 +81,11 @@ const ItemSelector = () => {
     }
   };
 
-  const isEnabled = selectedItems.length > 0;
+  const listSubmissionEnabled = selectedItems.length > 0;
+  const groupByItemType = _.groupBy(items, (item) => item.type);
 
   useEffect(() => {
-    // on snapshot updates itself everytime it detects a change in the database
+    // if contents of items changes onSnapshot will be triggered returning updated data
     try {
       onSnapshot(collection(db, "items"), (snapshot) => {
         const returnData = snapshot.docs.map((doc) => ({
@@ -99,7 +100,6 @@ const ItemSelector = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedItems);
     aggregateLowPrice();
     aggregateHighPrice();
   }, [selectedItems]);
@@ -115,19 +115,20 @@ const ItemSelector = () => {
       <div>
         Current Budget: {budget}
         <div>
-          {Object.entries(grouped).map(([key, value]) => (
+          {Object.entries(groupByItemType).map(([key, value]) => (
             <React.Fragment>
               <p className="itemSection">Type: {key}</p>
               {value.map((item, idx) => (
-                <p
+                <Item
                   key={item.id}
                   className="tempBorder"
                   onClick={() => handleSelectedItems(item, idx)}
-                >
-                  Name: {item.name} LowPrice: {item.lowPrice / 100} : HighPrice:{" "}
-                  {item.highPrice / 100} TotalLow: {totalLow} TotalHigh:{" "}
-                  {totalHigh}
-                </p>
+                  name={item.name}
+                  lowPrice={item.lowPrice / 100}
+                  highPrice={item.highPrice / 100}
+                  totalLowPrice={totalLowPrice}
+                  totalHighPrice={totalHighPrice}
+                />
               ))}
             </React.Fragment>
           ))}
@@ -135,7 +136,10 @@ const ItemSelector = () => {
           {selectedItems.map((item) => (
             <p>{item.name}</p>
           ))}
-          <button disabled={!isEnabled} onClick={handleChecklistUpload}>
+          <button
+            disabled={!listSubmissionEnabled}
+            onClick={handleChecklistUpload}
+          >
             Submit
           </button>
         </div>

@@ -3,7 +3,7 @@ import BudgetInput from "./BudgetInput";
 import _ from "lodash";
 
 import db from "../firebase";
-import { onSnapshot, collection } from "firebase/firestore";
+import { onSnapshot, collection, setDoc, doc } from "firebase/firestore";
 
 const ItemSelector = () => {
   const [budget, setBudget] = useState(0);
@@ -57,26 +57,51 @@ const ItemSelector = () => {
     setTotalHigh(highPrice / 100);
   };
 
-  useEffect(
-    () =>
-      // on snapshot updates itself everytime it detects a change in the database
-      // returns on useEffect, successfully terminates listener
+  const displayBudgetMessage = () => {
+    if (totalLow > budget || totalHigh > budget) {
+      return <p>You are over budget</p>;
+    } else if (totalHigh <= budget) {
+      return <p>You are on budget</p>;
+    }
+    return <p>You are under budget</p>;
+  };
+
+  const handleChecklistUpload = async () => {
+    try {
+      await setDoc(
+        doc(db, "larrySimiyuBudgetChecklist", "checklistTestId0003"),
+        {
+          items: selectedItems,
+        }
+      );
+      console.log("success push");
+    } catch (error) {
+      console.log(error, "push didnt work");
+      return error;
+    }
+  };
+
+  const isEnabled = selectedItems.length > 0;
+
+  useEffect(() => {
+    // on snapshot updates itself everytime it detects a change in the database
+    try {
       onSnapshot(collection(db, "items"), (snapshot) => {
         const returnData = snapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
         setItems(returnData);
-      }),
-    []
-  );
+      });
+    } catch (error) {
+      return error;
+    }
+  }, []);
 
   useEffect(() => {
     console.log(selectedItems);
     aggregateLowPrice();
     aggregateHighPrice();
-
-    console.log(totalLow, "total low printed");
   }, [selectedItems]);
 
   if (budget === 0) {
@@ -99,12 +124,20 @@ const ItemSelector = () => {
                   className="tempBorder"
                   onClick={() => handleSelectedItems(item, idx)}
                 >
-                  Name: {item.name} LowPrice: {item.lowPrice} : HighPrice:{" "}
-                  {item.highPrice} TotalLow: {totalLow} TotalHigh: {totalHigh}
+                  Name: {item.name} LowPrice: {item.lowPrice / 100} : HighPrice:{" "}
+                  {item.highPrice / 100} TotalLow: {totalLow} TotalHigh:{" "}
+                  {totalHigh}
                 </p>
               ))}
             </React.Fragment>
           ))}
+          {displayBudgetMessage()}
+          {selectedItems.map((item) => (
+            <p>{item.name}</p>
+          ))}
+          <button disabled={!isEnabled} onClick={handleChecklistUpload}>
+            Submit
+          </button>
         </div>
       </div>
     );

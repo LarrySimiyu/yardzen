@@ -4,8 +4,8 @@ const BudgetInput = ({ submitBudget }) => {
   const [budget, setBudget] = useState(0);
 
   const handleBudgetInput = (event) => {
-    setBudget(event.target.value);
-    console.log(budget, "budget input");
+    const budgetInput = event.target.value.replace(/\D/g, "");
+    setBudget(budgetInput);
   };
 
   const handleBudgetFormSubmit = (event) => {
@@ -16,18 +16,23 @@ const BudgetInput = ({ submitBudget }) => {
     }
   };
 
+  const isEnabled = budget.length > 0;
+
   return (
     <div>
       <form onSubmit={handleBudgetFormSubmit}>
-        <label>
+        <label for="budget">
           Enter Your Budget
           <input
+            id="budget"
             type="text"
             value={budget}
             placeholder="Enter Budget"
             onChange={handleBudgetInput}
           />
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={!isEnabled}>
+            Submit
+          </button>
         </label>
       </form>
       <section>This is your budget: {budget}</section>

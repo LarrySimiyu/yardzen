@@ -31,3 +31,7 @@
 .tempBorder {
   border: 1px solid black;
 }
+
+.itemSection {
+  font-weight: bold;
+}

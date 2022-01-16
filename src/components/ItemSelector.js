@@ -9,25 +9,53 @@ const ItemSelector = () => {
   const [budget, setBudget] = useState(0);
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [totalLow, setTotalLow] = useState(0);
+  const [totalHigh, setTotalHigh] = useState(0);
 
   const handleBudgetSubmission = (finalBudget) => {
     console.log(finalBudget);
     setBudget(finalBudget);
-    console.log(budget, "item selector");
   };
 
-  console.log(items);
   const grouped = _.groupBy(items, (item) => item.type);
-  console.log(grouped, "grouped items object");
 
-  for (const [key, value] of Object.entries(grouped)) {
-    console.log(
-      key,
-      "object keys",
-      value.map((item) => item),
-      "object values with type"
-    );
-  }
+  const handleSelectedItems = (item) => {
+    let isInArr = false;
+    let selectedIndex;
+    setTotalLow(0);
+    // if same type is in selected items, replace that item
+    selectedItems?.map((selected, idx) => {
+      if (selected.type && selected.type === item.type) {
+        isInArr = true;
+        selectedIndex = idx;
+        setTotalLow((totalLow) => (totalLow += selected.lowPrice));
+      }
+    });
+
+    if (isInArr) {
+      // delete if found
+      selectedItems.splice(selectedIndex, 1);
+      setSelectedItems([...selectedItems, item]);
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
+  const aggregateLowPrice = () => {
+    let lowPrice = 0;
+    selectedItems.forEach((item) => {
+      return (lowPrice += item.lowPrice);
+    });
+    setTotalLow(lowPrice / 100);
+  };
+
+  const aggregateHighPrice = () => {
+    let highPrice = 0;
+    selectedItems.forEach((item) => {
+      return (highPrice += item.highPrice);
+    });
+    setTotalHigh(highPrice / 100);
+  };
 
   useEffect(
     () =>
@@ -43,6 +71,14 @@ const ItemSelector = () => {
     []
   );
 
+  useEffect(() => {
+    console.log(selectedItems);
+    aggregateLowPrice();
+    aggregateHighPrice();
+
+    console.log(totalLow, "total low printed");
+  }, [selectedItems]);
+
   if (budget === 0) {
     return (
       <BudgetInput
@@ -54,17 +90,17 @@ const ItemSelector = () => {
       <div>
         Current Budget: {budget}
         <div>
-          {/* {items.map((item) => (
-            <p key={item.id}>{item.name}</p>
-          ))} */}
-
           {Object.entries(grouped).map(([key, value]) => (
             <React.Fragment>
-              <p>Type: {key}</p>
-              {value.map((item) => (
-                <p key={item.id} className="tempBorder">
+              <p className="itemSection">Type: {key}</p>
+              {value.map((item, idx) => (
+                <p
+                  key={item.id}
+                  className="tempBorder"
+                  onClick={() => handleSelectedItems(item, idx)}
+                >
                   Name: {item.name} LowPrice: {item.lowPrice} : HighPrice:{" "}
-                  {item.highPrice}
+                  {item.highPrice} TotalLow: {totalLow} TotalHigh: {totalHigh}
                 </p>
               ))}
             </React.Fragment>

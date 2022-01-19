@@ -1,0 +1,154 @@
+/* item selector compoent */
+.itemSelectorContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.itemCard {
+  width: 30%;
+  height: 300px;
+  margin-bottom: 30px;
+  margin-right: 50px;
+}
+
+.itemSectionHeader {
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-start;
+  font-size: 40px;
+  color: #a663cc;
+  padding-left: 50px;
+}
+
+.itemCardContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 87%;
+}
+
+.sectionSubContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.itemImage {
+  object-fit: cover;
+  width: 100%;
+  height: 180px;
+}
+
+.items {
+  width: 80%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.items::-webkit-scrollbar {
+  display: none;
+}
+
+.cartContainer {
+  width: 20%;
+  background-color: #a663cc;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.budgetDisplay {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+.cartItems {
+  width: 80%;
+  padding-top: 10px;
+}
+
+.submitCartButton {
+  width: 100%;
+}
+
+.cartItem {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+}
+
+.budgetWarning {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.selectedItems {
+  height: 60%;
+  margin-bottom: 150px;
+  margin-top: 12px;
+}
+
+.totalContainer {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.budgetDisplayLabel {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.selectedItemsLabel {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.itemImageContainer {
+  height: 60%;
+  width: 100%;
+}
+
+.itemDetailsContainer {
+  height: 40%;
+  background-color: #a663cc;
+  border-top: 2px solid white;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+.itemNameContainer {
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 20px;
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.itemPriceContainer {
+  font-weight: bold;
+  padding-left: 18px;
+  font-size: 35px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: flex-start;
+}

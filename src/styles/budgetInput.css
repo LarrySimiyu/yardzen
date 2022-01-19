@@ -1,0 +1,80 @@
+.budgetInputPage {
+  color: red;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.budgetInputCard {
+  border: 3px solid #a663cc;
+  width: 35%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 25px;
+  justify-content: center;
+}
+
+.budgetInputContent {
+  width: 70%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.budgetCardHeader {
+  margin-bottom: 10px;
+}
+.budgetMessage {
+  margin-bottom: 10px;
+}
+
+.budgetInputDisplay {
+  height: 70px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: bold;
+  color: #a663cc;
+  font-size: 70px;
+}
+
+.budgetMessage {
+  color: gray;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-start;
+}
+
+span {
+  color: #a663cc;
+  white-space: pre;
+}
+
+.budgetForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputBudgetLabel {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.budgetInputContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 106px;
+}
+
+.budgetSubmitButton {
+  width: 100%;
+}

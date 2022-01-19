@@ -139,7 +139,6 @@ const ItemSelector = () => {
         <div className="items">
           {Object.entries(groupByItemType).map(([key, value]) => (
             <React.Fragment>
-              <div className="itemSectionContainer"></div>
               <p className="itemSectionHeader">{sectionTitleFormat.get(key)}</p>
               <div className="sectionSubContainer">
                 <div className="itemCardContainer">

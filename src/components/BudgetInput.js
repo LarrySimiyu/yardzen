@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { TextField, Button } from "@mui/material";
+import "../styles/budgetInput.css";
 
-const BudgetInput = ({ submitBudget }) => {
+const BudgetInput = ({ submitBudget, formatDollarValue }) => {
   const [budget, setBudget] = useState(0);
 
   // allows user to only enter a numeric value in the input field
@@ -9,7 +11,7 @@ const BudgetInput = ({ submitBudget }) => {
     setBudget(budgetInput);
   };
 
-  const handleBudgetFormSubmit = (event) => {
+  const handleBudgetFormSubmission = (event) => {
     if (budget !== 0) {
       event.preventDefault();
       submitBudget(budget);
@@ -19,24 +21,46 @@ const BudgetInput = ({ submitBudget }) => {
   const enableSubmitButton = budget > 0;
 
   return (
-    <div>
-      <form onSubmit={handleBudgetFormSubmit}>
-        <label for="budget">
-          Enter Your Budget
-          <input
-            id="budget"
-            type="text"
-            value={budget}
-            data-testid="budget-input"
-            placeholder="Enter Budget"
-            onChange={handleBudgetInput}
-          />
-          <button type="submit" disabled={!enableSubmitButton}>
-            Submit
-          </button>
-        </label>
-      </form>
-      <section>This is your budget: {budget}</section>
+    <div className="budgetInputCard">
+      <div className="budgetInputContent">
+        <div className="budgetCardHeader">
+          <div className="budgetInputDisplay">${formatDollarValue(budget)}</div>
+        </div>
+        <div className="budgetForm">
+          <div className="budgetMessage">
+            Let's get you started. Enter your <span> budget</span>.
+          </div>
+          <form onSubmit={handleBudgetFormSubmission}>
+            <div className="budgetInputContainer">
+              <TextField
+                variant="outlined"
+                id="budget"
+                type="text"
+                value={budget}
+                data-testid="budget-input"
+                placeholder="0"
+                onChange={handleBudgetInput}
+                size="small"
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                className="budgetSubmitButton"
+                disabled={!enableSubmitButton}
+                sx={{
+                  backgroundColor: "#A663CC",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                }}
+              >
+                Submit
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
